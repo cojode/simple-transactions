@@ -1,0 +1,67 @@
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: ["/usr/local/bin/python", "-m", "simple_transactions.auth.__main__"]
+    image: simple_transactions:${SIMPLE_TRANSACTIONS_VERSION:-latest}
+    restart: always
+    ports: 
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SIMPLE_TRANSACTIONS_HOST: 0.0.0.0
+      SIMPLE_TRANSACTIONS_DB_HOST: simple_transactions-db
+      SIMPLE_TRANSACTIONS_DB_PORT: 5432
+      SIMPLE_TRANSACTIONS_DB_USER: simple_transactions
+      SIMPLE_TRANSACTIONS_DB_PASS: simple_transactions
+      SIMPLE_TRANSACTIONS_DB_BASE: simple_transactions
+
+  operation:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: ["/usr/local/bin/python", "-m", "simple_transactions.operation.__main__"]
+    image: simple_transactions:${SIMPLE_TRANSACTIONS_VERSION:-latest}
+    restart: always
+    ports: 
+      - 8001:8000
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SIMPLE_TRANSACTIONS_HOST: 0.0.0.0
+      SIMPLE_TRANSACTIONS_DB_HOST: simple_transactions-db
+      SIMPLE_TRANSACTIONS_DB_PORT: 5432
+      SIMPLE_TRANSACTIONS_DB_USER: simple_transactions
+      SIMPLE_TRANSACTIONS_DB_PASS: simple_transactions
+      SIMPLE_TRANSACTIONS_DB_BASE: simple_transactions
+
+
+  db:
+    image: postgres:16.3-bullseye
+    hostname: simple_transactions-db
+    environment:
+      POSTGRES_PASSWORD: "simple_transactions"
+      POSTGRES_USER: "simple_transactions"
+      POSTGRES_DB: "simple_transactions"
+    volumes:
+      - simple_transactions-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U simple_transactions
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+
+
+volumes:
+  simple_transactions-db-data:
+    name: simple_transactions-db-data

@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "simple_transactions"
+version = "0.1.0"
+description = ""
+authors = ["abyss <abyss@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115.6"
+sqlalchemy = "^2.0.36"
+alembic = "^1.14.0"
+aiologger = "^0.7.0"
+punq = "^0.7.0"
+uvicorn = "^0.32.1"
+yarl = "^1.18.3"
+pydantic = "^2.10.3"
+pydantic-settings = "^2.6.1"
+asyncpg = "^0.30.0"
+psycopg2 = "^2.9.10"
+loguru = "^0.7.3"
+
+[tool.poetry.scripts]
+auth = "simple_transactions.auth.__main__:main"
+operation = "simple_transactions.operation.__main__:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
