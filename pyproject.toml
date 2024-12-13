@@ -19,6 +19,12 @@ pydantic-settings = "^2.6.1"
 asyncpg = "^0.30.0"
 psycopg2 = "^2.9.10"
 loguru = "^0.7.3"
+psycopg2-binary = "^2.9.10"
+passlib = "^1.7.4"
+python-jose = "^3.3.0"
+pytz = "^2024.2"
+ujson = "^5.10.0"
+python-multipart = "^0.0.19"
 
 [tool.poetry.scripts]
 auth = "simple_transactions.auth.__main__:main"
