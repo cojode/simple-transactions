@@ -18,10 +18,10 @@ from simple_transactions.auth.services.auth import (
 http_bearer = HTTPBearer()
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register_user(username: str, password: str, container: Container = Depends(init_container)):
+async def register_user(username: str, password: str, balance: int, container: Container = Depends(init_container)):
     auth_service: AuthService = container.resolve(AuthService)
     try:
-        return await auth_service.register_user(username=username, password=password)
+        return await auth_service.register_user(username=username, password=password, balance=balance)
     except AuthServiceUsernameAlreadyRegisteredError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Username already registered.')
 
@@ -40,4 +40,3 @@ async def change_password(username: str = Form(...), credentials: HTTPAuthorizat
         await auth_service.update_user_password(username, credentials.credentials, new_password)
     except (AuthServiceUsernameNotRegisteredError, AuthServiceBadTokenError):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Password change request failed for user {username}: invalid credentials.')
-    

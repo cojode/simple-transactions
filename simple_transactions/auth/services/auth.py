@@ -52,14 +52,15 @@ class AuthService:
         logger.info(f'User {username} succesfully changed password.')
         
         
-    async def register_user(self, username: str, password: str) -> dict:
+    async def register_user(self, username: str, password: str, balance: int) -> dict:
         if await self.user_repository.is_username_exists(user_username=username):
             logger.info('Registration attempt failed: user with username {username} already registered.')
             raise AuthServiceUsernameAlreadyRegisteredError
         
         user = await self.user_repository.create_user(
             username=username,
-            hashed_password=self.security_service.get_password_hash(password)
+            hashed_password=self.security_service.get_password_hash(password),
+            balance=balance
         )
         
         output = model_row_to_dict(user)

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import DeclarativeBase
 
-from simple_transactions.operation.db.meta import meta
+from simple_transactions.auth.db.meta import meta
 
 
 class Base(DeclarativeBase):

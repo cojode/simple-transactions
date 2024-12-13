@@ -7,4 +7,5 @@ class UserModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(unique=True, index=True)
+    balance: Mapped[int] = mapped_column(default=0, nullable=True)
     hashed_password: Mapped[str] = mapped_column()
