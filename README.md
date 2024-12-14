@@ -14,7 +14,7 @@
    ```
 3. Create a .env file and edit it:
    ```bash
-   mv .example.env .env
+   cp .example.env .env
    ```
 4. Run the container:
    ```bash
