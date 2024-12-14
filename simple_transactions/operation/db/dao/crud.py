@@ -45,7 +45,7 @@ class CRUDRepository:
             query = query.offset(offset)
 
         result = await session.execute(query)
-        if only_first is not None:
+        if only_first:
             return result.scalars().first()
         return result.scalars().all()
 

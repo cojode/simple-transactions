@@ -6,6 +6,8 @@ from simple_transactions.operation.services.auth_client import (
     AuthClientServiceError,
 )
 
+from simple_transactions.operation.db.dao.exc import CommonRepositoryError
+
 from simple_transactions.operation.services.utils import model_row_to_dict
 
 from loguru import logger
@@ -54,14 +56,37 @@ class TransactionService:
         filter_date_before: datetime.date | None = None,
         filter_status: str | None = None,
     ):
-        return await self.transaction_repository.browse_transactions_by_user_from_id(
-            user_from_id,
-            offset,
-            limit,
-            filter_date_after,
-            filter_date_before,
-            filter_status,
+        transactions = (
+            await self.transaction_repository.browse_transactions_by_user_from_id(
+                user_from_id,
+                offset,
+                limit,
+                filter_date_after,
+                filter_date_before,
+                filter_status,
+            )
         )
+
+        formatted_transactions = []
+        for transaction in transactions:
+            if transaction:
+                transaction = model_row_to_dict(transaction)
+                if transaction["from_user"]:
+                    transaction["from_user"] = model_row_to_dict(
+                        transaction["from_user"]
+                    )
+                    transaction["from_user"].pop("hashed_password")
+                else:
+                    transaction.pop("from_user")
+                if transaction["to_user"]:
+                    transaction["to_user"] = model_row_to_dict(transaction["to_user"])
+                    transaction["to_user"].pop("hashed_password")
+                else:
+                    transaction.pop("to_user")
+
+                formatted_transactions.append(transaction)
+
+        return formatted_transactions
 
     async def process_transaction(
         self,
@@ -116,7 +141,14 @@ class TransactionService:
             )
             new_transaction.status = TransactionStatus.success
             await self.transaction_repository.save_transaction(new_transaction)
-        except:
+        except CommonRepositoryError as e:
             new_transaction.status = TransactionStatus.failure
             await self.transaction_repository.save_transaction(new_transaction)
+            logger.info(
+                f"Balance transfer failed for transaction {model_row_to_dict(new_transaction)}: {e}"
+            )
             raise TransactionBalanceUpdateFailed
+
+        logger.info(
+            f"Succesfull transaction: {user_from} -> {user_to}, amount: {amount}, transaction creation date: {new_transaction.date}"
+        )
