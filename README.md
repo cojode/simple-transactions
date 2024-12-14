@@ -12,16 +12,18 @@
    ```bash
    poetry install
    ```
-
-3. Apply database migrations:
+   
+3. Run the container:
+   ```bash
+   docker compose up --build
+   ```
+   
+4. Apply database migrations:
    ```bash
    alembic upgrade head
    ```
 
-4. Run the container:
-   ```bash
-   docker compose up --build
-   ```
+
 
 ## Project Structure
 
