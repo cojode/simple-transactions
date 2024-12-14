@@ -1,5 +1,6 @@
 from .database import Database
 
+
 def repository_for(model):
     def decorator(cls):
         orig_init = cls.__init__

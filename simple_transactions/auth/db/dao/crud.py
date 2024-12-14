@@ -1,14 +1,16 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Type, TypeVar, List, Optional, Any, Dict, Generic
-from sqlalchemy import select as sql_select, update as sql_update, delete as sql_delete, Select
+from sqlalchemy import (
+    select as sql_select,
+    update as sql_update,
+    delete as sql_delete,
+    Select,
+)
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from .database import Database
-from .exc import (
-    CommonRepositoryError,
-    ForeignKeyViolation
-)
+from .exc import CommonRepositoryError, ForeignKeyViolation
 
 T = TypeVar("T")
 
@@ -29,8 +31,12 @@ class AbstractCRUDRepository(ABC, Generic[T]):
 
     @abstractmethod
     async def read(
-        self, only_first=False, limit: Optional[int] = None, 
-        offset: Optional[int] = None, order_by=None, **filters: Any
+        self,
+        only_first=False,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        order_by=None,
+        **filters: Any,
     ) -> List[T]:
         """
         Reads entities with an optional QueryBuilder for custom filtering.
@@ -43,9 +49,7 @@ class AbstractCRUDRepository(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    async def update(
-        self, fields: Dict[str, Any], **filters: Any
-    ) -> int:
+    async def update(self, fields: Dict[str, Any], **filters: Any) -> int:
         """
         Updates entities based on conditions set in QueryBuilder and specified fields.
 
@@ -79,7 +83,9 @@ class AbstractCRUDRepository(ABC, Generic[T]):
         """
         pass
 
+
 T = TypeVar("T")
+
 
 @dataclass
 class CRUDRepository(AbstractCRUDRepository[T]):
@@ -97,8 +103,13 @@ class CRUDRepository(AbstractCRUDRepository[T]):
             raise CommonRepositoryError(f"Failed to create entity: {e}") from e
 
     async def read(
-        self, only_first=False, raw_query: Select = None, limit: Optional[int] = None, 
-        offset: Optional[int] = None, order_by=None, **filters: Any
+        self,
+        only_first=False,
+        raw_query: Select = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        order_by=None,
+        **filters: Any,
     ) -> List[T]:
         """
         Reads entities with optional filters, pagination, and ordering.
@@ -111,7 +122,7 @@ class CRUDRepository(AbstractCRUDRepository[T]):
                 query = query.limit(limit)
             if offset is not None:
                 query = query.offset(offset)
-            
+
             if raw_query is not None:
                 query = raw_query
 
@@ -147,7 +158,7 @@ class CRUDRepository(AbstractCRUDRepository[T]):
                 if entity is not None:
                     await session.delete(entity)
                     return 1
-                
+
                 query = sql_delete(self.model).filter_by(**filters)
                 result = await session.execute(query)
                 await session.commit()

@@ -2,7 +2,9 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 from simple_transactions.auth.db.models import load_all_models as load_all_auth_models
-from simple_transactions.operation.db.models import load_all_models as load_all_operation_models
+from simple_transactions.operation.db.models import (
+    load_all_models as load_all_operation_models,
+)
 from simple_transactions.auth.settings import settings
 
 config = context.config
@@ -12,7 +14,7 @@ config.set_main_option("sqlalchemy.url", str(settings.sync_db_url))
 #     fileConfig(config.config_file_name, disable_existing_loggers=False)
 
 load_all_auth_models()
-# load_all_operation_models()
+load_all_operation_models()
 from simple_transactions.auth.db.meta import meta
 
 target_metadata = meta

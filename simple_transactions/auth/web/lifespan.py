@@ -62,7 +62,7 @@ async def lifespan_setup(
     app.middleware_stack = None
     _setup_db(app)
     _test_db_connection()
-    
+
     app.middleware_stack = app.build_middleware_stack()
 
     yield

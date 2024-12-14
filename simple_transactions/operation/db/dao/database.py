@@ -28,3 +28,14 @@ class Database:
         finally:
             await session.commit()
             await session.close()
+
+    @asynccontextmanager
+    async def get_transactional_session(self) -> AsyncGenerator[AsyncSession, Any]:
+        session: AsyncSession = self._async_session()
+        try:
+            yield session
+        except SQLAlchemyError:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()

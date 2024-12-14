@@ -25,6 +25,7 @@ python-jose = "^3.3.0"
 pytz = "^2024.2"
 ujson = "^5.10.0"
 python-multipart = "^0.0.19"
+aiohttp = "^3.11.10"
 
 [tool.poetry.scripts]
 auth = "simple_transactions.auth.__main__:main"

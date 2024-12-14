@@ -2,11 +2,12 @@ from simple_transactions.auth.db.dao import ExtendedCRUDRepository, repository_f
 
 from simple_transactions.auth.db.models.user import UserModel
 
+
 @repository_for(UserModel)
 class UserRepository(ExtendedCRUDRepository[UserModel]):
     async def is_user_exists(self, user_id: int) -> bool:
         return await self.exists(id=user_id)
-    
+
     async def is_username_exists(self, user_username: str) -> bool:
         return await self.exists(username=user_username)
 
@@ -15,7 +16,7 @@ class UserRepository(ExtendedCRUDRepository[UserModel]):
 
     async def get_user_by_id(self, user_id: int) -> UserModel | None:
         return await self.find_by_id(item_id=user_id)
-    
+
     async def get_user_by_username(self, user_username: str) -> UserModel | None:
         return await self.find_one(username=user_username)
 
