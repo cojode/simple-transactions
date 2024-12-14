@@ -51,6 +51,8 @@ services:
       POSTGRES_PASSWORD: "simple_transactions"
       POSTGRES_USER: "simple_transactions"
       POSTGRES_DB: "simple_transactions"
+    ports:
+      - 5432:5432
     volumes:
       - simple_transactions-db-data:/var/lib/postgresql/data
     restart: always

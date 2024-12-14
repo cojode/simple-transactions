@@ -2,6 +2,7 @@ import enum
 from pathlib import Path
 from tempfile import gettempdir
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
 
@@ -35,6 +36,16 @@ class Settings(BaseSettings):
     workers_count: int = 1
     # Enable uvicorn reloading
     reload: bool = False
+
+    SIMPLE_TRANSACTIONS_AUTH_SECRET_KEY: str = Field(
+        alias="SIMPLE_TRANSACTIONS_AUTH_SECRET_KEY"
+    )
+    SIMPLE_TRANSACTIONS_AUTH_ENCRYPT_ALGORITHM: str = Field(
+        alias="SIMPLE_TRANSACTIONS_AUTH_ENCRYPT_ALGORITHM"
+    )
+    SIMPLE_TRANSACTIONS_AUTH_DEFAULT_JWT_EXPIRES_SECONDS: int = Field(
+        alias="SIMPLE_TRANSACTIONS_AUTH_DEFAULT_JWT_EXPIRES_SECONDS"
+    )
 
     # Current environment
     environment: str = "dev"

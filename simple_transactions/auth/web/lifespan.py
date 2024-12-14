@@ -45,14 +45,6 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     app.state.db_session_factory = session_factory
 
 
-def _run_migrations() -> None:  # pragma: no cover
-    alembic_cfg = Config(str(settings.build_relative_location_to(settings.alembic_ini)))
-    alembic_cfg.set_main_option("script_location", settings.alembic_folder)
-    logger.info("Attempting migration with alembic upgrade runtime call.")
-    command.upgrade(alembic_cfg, "head")
-    logger.info("Alembic call succeeded: migration succesfull.")
-
-
 @asynccontextmanager
 async def lifespan_setup(
     app: FastAPI,
@@ -70,7 +62,6 @@ async def lifespan_setup(
     app.middleware_stack = None
     _setup_db(app)
     _test_db_connection()
-    _run_migrations()
 
     app.middleware_stack = app.build_middleware_stack()
 
