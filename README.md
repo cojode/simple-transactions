@@ -12,15 +12,18 @@
    ```bash
    poetry install
    ```
-   
-3. Run the container:
+3. Create a .env file and edit it:
+   ```bash
+   mv .example.env .env
+   ```
+4. Run the container:
    ```bash
    docker compose up --build
    ```
    
-4. Apply database migrations:
+5. Apply database migrations:
    ```bash
-   alembic upgrade head
+   poetry run alembic upgrade head
    ```
 
 
